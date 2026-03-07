@@ -147,7 +147,7 @@ class QuizActivity : AppCompatActivity() {
     }
 
     private fun showFinalResult() {
-        // Kelime türlerine göre hata analizi (Eksiği olduğu bölümler)
+        // Kelime türlerine göre hata analizi (Eksiği golduğu bölümler)
         val analysis = wrongWordsList.groupBy { it.type }
             .map { "${it.key}: ${it.value.size} hata" }
             .joinToString("\n")
