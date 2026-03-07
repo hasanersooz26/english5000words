@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F4F8"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvProgressInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 / 50"
+        android:textColor="#4A90E2"
+        android:layout_gravity="center"/>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="30dp"
+            android:gravity="center">
+
+            <TextView android:id="@+id/tvWord" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="32sp" android:textStyle="bold" android:textColor="#102A43"/>
+            <TextView android:id="@+id/tvType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#4A90E2" android:layout_marginTop="5dp"/>
+            <View android:layout_width="80dp" android:layout_height="2dp" android:background="#F0F4F8" android:layout_margin="20dp"/>
+            <TextView android:id="@+id/tvMeaning" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20sp" android:textColor="#102A43" android:gravity="center"/>
+            <TextView android:id="@+id/tvExampleEn" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="25dp" android:textStyle="italic" android:gravity="center"/>
+            <TextView android:id="@+id/tvExampleTr" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="#627D98" android:gravity="center"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnDontKnow"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:text="Anlamadım"
+            android:backgroundTint="#F44336"
+            android:layout_marginEnd="5dp"
+            app:cornerRadius="15dp"/>
+
+        <Button
+            android:id="@+id/btnLearned"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="60dp"
+            android:text="Anladım"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginStart="5dp"
+            app:cornerRadius="15dp"/>
+    </LinearLayout>
+</LinearLayout>
