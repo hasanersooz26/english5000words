@@ -48,68 +48,48 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/btnResume"
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:layout_marginTop="25dp"
-        android:text="Kaldığın Yerden Devam Et"
-        android:backgroundTint="#FF9800"
-        android:textAllCaps="false"
-        android:textSize="18sp"
-        app:cornerRadius="15dp" />
-
-    <Button
         android:id="@+id/btnLearn"
         android:layout_width="match_parent"
         android:layout_height="75dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="30dp"
         android:text="Bölüm Seçerek Öğren"
         android:backgroundTint="#4A90E2"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:cornerRadius="15dp" />
 
-    <RelativeLayout
+    <Button
+        android:id="@+id/btnQuiz"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp">
+        android:layout_height="75dp"
+        android:layout_marginTop="12dp"
+        android:text="Quiz Yap"
+        android:backgroundTint="#4CAF50"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:cornerRadius="15dp" />
 
-        <Button
-            android:id="@+id/btnQuiz"
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:text="Quiz Yap"
-            android:backgroundTint="#4CAF50"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            app:cornerRadius="15dp" />
+    <Button
+        android:id="@+id/btnErrorReview"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginTop="12dp"
+        android:text="Hatalı Kelimeler (0)"
+        android:backgroundTint="#F44336"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:cornerRadius="15dp" />
 
-        <LinearLayout
-            android:id="@+id/errorBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="-8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/error_circle"
-            android:padding="8dp"
-            android:elevation="6dp">
+    <Button
+        android:id="@+id/btnSpecial"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginTop="12dp"
+        android:text="Özel Bölüm"
+        android:backgroundTint="#9C27B0"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:cornerRadius="15dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="!"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvErrorCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="0"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </RelativeLayout>
 </LinearLayout>

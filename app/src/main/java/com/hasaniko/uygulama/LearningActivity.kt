@@ -42,25 +42,33 @@ class LearningActivity : AppCompatActivity() {
 
     private fun loadWords() {
         CoroutineScope(Dispatchers.IO).launch {
+            var initialIndex = 0
             wordList = when(mode) {
                 "continue" -> {
-                    // Kaldığın yerden devam: Tüm öğrenilmemişleri getirir
                     val next = db.wordDao().getNextResumeWord()
-                    if (next != null) db.wordDao().getUnlearnedWordsByLevel(next.level) else listOf()
+                    if (next != null) {
+                        val list = db.wordDao().getUnlearnedWordsByLevel(next.level)
+                        initialIndex = list.indexOfFirst { it.id == next.id }.coerceAtLeast(0)
+                        list
+                    } else {
+                        listOf()
+                    }
                 }
                 "error_review" -> db.wordDao().getWrongWords()
-                else -> db.wordDao().getUnlearnedWordsByLevel(selectedLevel)
+                else -> {
+                    val unlearned = db.wordDao().getUnlearnedWordsByLevel(selectedLevel)
+                    if (unlearned.isNotEmpty()) unlearned else db.wordDao().getAllWordsByLevel(selectedLevel)
+                }
             }
 
             withContext(Dispatchers.Main) {
                 if (wordList.isNotEmpty()) {
-                    // "continue" modundaysak, listedeki tam sıramızı bulalım
-                    if (mode == "continue") {
-                        val next = db.wordDao().getNextResumeWord()
-                        currentIndex = wordList.indexOfFirst { it.id == next?.id }.coerceAtLeast(0)
-                    }
+                    currentIndex = initialIndex
                     display()
-                } else { finish() }
+                } else {
+                    Toast.makeText(this@LearningActivity, "Bu listede öğrenecek kelime kalmadı!", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
             }
         }
     }

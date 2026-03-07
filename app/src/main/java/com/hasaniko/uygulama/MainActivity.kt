@@ -12,10 +12,10 @@ import kotlinx.coroutines.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var db: AppDatabase
-    private lateinit var tvErrorCount: TextView
-    private lateinit var errorBadge: LinearLayout
     private lateinit var tvCurrentLevel: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var btnErrorReview: Button
+    private lateinit var btnSpecial: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +24,10 @@ class MainActivity : AppCompatActivity() {
         db = AppDatabase.getInstance(this)
         DatabaseInitializer.populateDatabase(this, db)
 
-        tvErrorCount = findViewById(R.id.tvErrorCount)
-        errorBadge = findViewById(R.id.errorBadge)
         tvCurrentLevel = findViewById(R.id.tvCurrentLevel)
         progressBar = findViewById(R.id.levelProgressBar)
-
-        findViewById<Button>(R.id.btnResume).setOnClickListener {
-            val intent = Intent(this, LearningActivity::class.java)
-            intent.putExtra("mode", "continue")
-            startActivity(intent)
-        }
+        btnErrorReview = findViewById(R.id.btnErrorReview)
+        btnSpecial = findViewById(R.id.btnSpecial)
 
         findViewById<Button>(R.id.btnLearn).setOnClickListener {
             showLevelSelectDialog()
@@ -43,31 +37,50 @@ class MainActivity : AppCompatActivity() {
             showQuizSetupDialog()
         }
 
-        errorBadge.setOnClickListener {
-            val intent = Intent(this, LearningActivity::class.java)
-            intent.putExtra("mode", "error_review")
+        btnSpecial.setOnClickListener {
+            val intent = Intent(this, SpecialMenuActivity::class.java)
             startActivity(intent)
+        }
+
+        btnErrorReview.setOnClickListener {
+            val options = arrayOf("Hatalı Kelimelere Çalış", "Hatalardan Quiz Çöz")
+            AlertDialog.Builder(this)
+                .setTitle("Hata Listesi")
+                .setItems(options) { _, which ->
+                    if (which == 0) {
+                        val intent = Intent(this, LearningActivity::class.java)
+                        intent.putExtra("mode", "error_review")
+                        startActivity(intent)
+                    } else {
+                        val intent = Intent(this, QuizActivity::class.java)
+                        intent.putExtra("level", -1)
+                        intent.putExtra("limit", 20)
+                        startActivity(intent)
+                    }
+                }.show()
         }
     }
 
     private fun showLevelSelectDialog() {
         CoroutineScope(Dispatchers.IO).launch {
-            val maxFinished = db.wordDao().getMaxFinishedLevel() ?: 0
-            val currentSelectableLevel = maxFinished + 1
+            val activeLevel = db.wordDao().getCurrentActiveLevel() ?: db.wordDao().getMaxLevel()
 
             withContext(Dispatchers.Main) {
-                val levels = arrayOf("Bölüm 1", "Bölüm 2", "Bölüm 3")
+                val levelsList = mutableListOf("▶ Kaldığın Yerden Devam Et")
+                for (i in 1..activeLevel) {
+                    levelsList.add("Bölüm $i")
+                }
+
                 AlertDialog.Builder(this@MainActivity)
-                    .setTitle("Bölüm Seçin")
-                    .setItems(levels) { _, which ->
-                        val selectedLevel = which + 1
-                        if (selectedLevel <= currentSelectableLevel) {
-                            val intent = Intent(this@MainActivity, LearningActivity::class.java)
-                            intent.putExtra("level", selectedLevel)
-                            startActivity(intent)
+                    .setTitle("Öğrenme Modu Seçin")
+                    .setItems(levelsList.toTypedArray()) { _, which ->
+                        val intent = Intent(this@MainActivity, LearningActivity::class.java)
+                        if (which == 0) {
+                            intent.putExtra("mode", "continue")
                         } else {
-                            Toast.makeText(this@MainActivity, "Önceki bölümü bitirmelisiniz!", Toast.LENGTH_SHORT).show()
+                            intent.putExtra("level", which)
                         }
+                        startActivity(intent)
                     }.show()
             }
         }
@@ -80,12 +93,13 @@ class MainActivity : AppCompatActivity() {
         val etLimit = view.findViewById<EditText>(R.id.etLimit)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val maxFinished = db.wordDao().getMaxFinishedLevel() ?: 0
-            val activeLevel = maxFinished + 1
+            val activeLevel = db.wordDao().getCurrentActiveLevel() ?: db.wordDao().getMaxLevel()
 
             withContext(Dispatchers.Main) {
-                val levelsList = mutableListOf("Öğrendiklerim (Karışık)")
-                for (i in 1..activeLevel) { levelsList.add("Bölüm $i") }
+                val levelsList = mutableListOf("Karışık Sor (Bölüm 1-$activeLevel)")
+                for (i in 1..activeLevel) {
+                    levelsList.add("Bölüm $i")
+                }
 
                 spinnerLevel.adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, levelsList)
 
@@ -97,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this@MainActivity, QuizActivity::class.java)
                     intent.putExtra("level", spinnerLevel.selectedItemPosition)
                     intent.putExtra("limit", limit)
+                    intent.putExtra("activeLevel", activeLevel)
                     startActivity(intent)
                 }
                 builder.setNegativeButton("İptal", null)
@@ -121,10 +136,10 @@ class MainActivity : AppCompatActivity() {
                 progressBar.progress = (learnedCount.toFloat() / totalWords.toFloat() * 100).toInt()
 
                 if (errorCount > 0) {
-                    errorBadge.visibility = View.VISIBLE
-                    tvErrorCount.text = errorCount.toString()
+                    btnErrorReview.visibility = View.VISIBLE
+                    btnErrorReview.text = "Hatalı Kelimeler ($errorCount)"
                 } else {
-                    errorBadge.visibility = View.GONE
+                    btnErrorReview.visibility = View.GONE
                 }
             }
         }
